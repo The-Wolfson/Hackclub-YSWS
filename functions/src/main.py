@@ -36,8 +36,7 @@ def main(context):
 			"type": "header",
 			"text": {
 				"type": "plain_text",
-				"text": "YSWS Programs",
-				"emoji": true
+				"text": "YSWS Programs"
 			}
 		},
 		{
@@ -51,8 +50,7 @@ def main(context):
 			"type": "header",
 			"text": {
 				"type": "plain_text",
-				"text": "Limited Time",
-				"emoji": true
+				"text": "Limited Time"
 			}
 		},
 		{
@@ -68,7 +66,6 @@ def main(context):
 				"type": "button",
 				"text": {
 					"type": "plain_text",
-					"emoji": true,
 					"text": "Website"
 				},
 				"value": "click_me_123"
