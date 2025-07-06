@@ -1,4 +1,4 @@
-# Hackclub YSWS
+# Hackclub Events
 A Slack app to keep you up to date with Hackclub's YSWS programs and events.
 
 ## API
@@ -30,14 +30,14 @@ lists all events
   - `ended`
   - `upcoming`
 
-- **Type:**
+- **Modality:**
   - `all` *(default)*
   - `online`
   - `in-person`
   - `hybrid`
 
 - **Sort:**
-  - `type`
+  - `modality`
   - `alphabetical`
   - `date` *(default)*
 
