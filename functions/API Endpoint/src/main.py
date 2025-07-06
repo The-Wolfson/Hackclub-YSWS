@@ -1,3 +1,5 @@
+from pyexpat.errors import messages
+
 from .ysws.list import ysws_list
 from .ysws.details import ysws_details
 from .event.list import event_list
@@ -13,10 +15,14 @@ def main(context):
     context.log(len(split_path))
 
     if not context.req.method == "GET":
-        return context.res.text(f"Invalid method. Only GET is supported.", 405)
+        message = f"Invalid method. Only GET is supported."
+        context.error(message)
+        return context.res.text(message, 405)
 
     if not split_path[0] == "v1":
-        return context.res.text(f"{path} is not a valid path. Requires a version.", 400)
+        message = f"{path} is not a valid path. Requires a version."
+        context.error(message)
+        return context.res.text(message, 400)
 
     if split_path[1] == "ysws":
         if len(split_path) == 2:
@@ -30,8 +36,9 @@ def main(context):
         elif len(split_path) == 3:
             return event_details(context)
 
-    context.error(f"Unsupported endpoint: {path}")
-    return context.res.text(f"{path} is an unsupported endpoint", 400)
+    message = f"Unsupported endpoint: {path}"
+    context.error(message)
+    return context.res.text(message, 400)
 
 # https://dash.events.hackclub.com/api/v1/events
 # https://raw.githubusercontent.com/hackclub/YSWS-Catalog/refs/heads/main/api.json

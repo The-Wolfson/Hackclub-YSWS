@@ -45,7 +45,7 @@
             "execute": [
                 "any"
             ],
-            "name": "Fetch Programs",
+            "name": "API Endpoint",
             "enabled": true,
             "logging": true,
             "runtime": "python-3.12",
@@ -57,8 +57,8 @@
             "timeout": 15,
             "entrypoint": "src/main.py",
             "commands": "pip install -r requirements.txt",
-            "specification": "s-0.5vcpu-512mb",
-            "path": "functions/Fetch Programs"
+            "specification": "s-1vcpu-512mb",
+            "path": "functions/API Endpoint"
         }
     ]
 }
