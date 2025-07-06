@@ -1,5 +1,3 @@
-from pyexpat.errors import messages
-
 from .ysws.list import ysws_list
 from .ysws.details import ysws_details
 from .event.list import event_list
@@ -15,7 +13,7 @@ def main(context):
     context.log(len(split_path))
 
     if not context.req.method == "GET":
-        message = f"Invalid method. Only GET is supported."
+        message = "Invalid method. Only GET is supported."
         context.error(message)
         return context.res.text(message, 405)
 

@@ -58,7 +58,7 @@
             "entrypoint": "src/main.py",
             "commands": "pip install -r requirements.txt",
             "specification": "s-1vcpu-512mb",
-            "path": "functions/API Endpoint"
+            "path": "functions/api"
         }
     ]
 }

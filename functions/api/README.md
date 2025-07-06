@@ -1,5 +1,5 @@
 # Hackclub YSWS
-A Slack app that you up to date with Hackclub's YSWS programs and events.
+A Slack app to keep you up to date with Hackclub's YSWS programs and events.
 
 ## API
 ### GET
