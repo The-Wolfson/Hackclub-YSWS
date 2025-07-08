@@ -1,47 +1,58 @@
-from enum import Enum
-from datetime import datetime
 from dataclasses import dataclass
-from .location import Location
+from datetime import datetime
 
-class Modality(Enum):
-    HYBRID = "hybrid"
-    IN_PERSON = "in_person"
-    ONLINE = "online"
-
-
-class TypeEnum(Enum):
-    HACKATHON = "hackathon"
 
 @dataclass
 class Event:
     id: str
-    type: TypeEnum
-    name: str
-    starts_at: datetime
-    ends_at: datetime
-    modality: Modality
-    website: str
-    logo_url: str
-    banner_url: str
-    location: Location
-    apac: bool
-    created_at: datetime
+    slug: str
+    title: str
+    desc: str
+    leader: str
+    cal: str
+    start: datetime
+    end: datetime
+    youtube: str | None
+    ama: bool
+    ama_id: str
+    ama_avatar: str
+    avatar: str
 
     def __init__(self, data: dict):
         self.id = data.get("id")
-        self.type = TypeEnum(data.get("type"))
-        self.name = data.get("name")
-        self.starts_at = datetime.fromisoformat(data["starts_at"]) if data.get("starts_at") else None
-        self.ends_at = datetime.fromisoformat(data["ends_at"]) if data.get("ends_at") else None
-        self.modality = Modality(data.get("modality"))
-        self.website = data.get("website")
-        self.logo_url = data.get("logo_url")
-        self.banner_url = data.get("banner_url")
-        self.location = Location(data.get("location"))
-        self.apac = data.get("apac")
-        self.created_at = datetime.fromisoformat(data["created_at"]) if data.get("created_at") else None
+        self.slug = data.get("slug")
+        self.title = data.get("title")
+        self.desc = data.get("desc")
+        self.leader = data.get("leader")
+        self.cal = data.get("cal")
+        self.start = datetime.fromisoformat(data["start"])
+        self.end = datetime.fromisoformat(data["end"])
+        self.youtube = data.get("youtube")
+        self.ama = data.get("ama")
+        self.ama_id = data.get("amaId")
+        self.ama_avatar = data.get("amaAvatar")
+        self.avatar = data.get("avatar")
 
     def to_blocks(self):
+        elements = [
+            {
+                "type": "button",
+                "text": {
+                    "type": "plain_text",
+                    "text": "Add to Calendar"
+                },
+                "url": self.cal
+            }
+        ]
+        if self.youtube:
+            elements.append({
+                                "type": "button",
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Watch"
+                                },
+                                "url": self.youtube
+            })
         return [
             {
                 "type": "divider"
@@ -50,12 +61,25 @@ class Event:
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": f"*<{self.website}|{self.name}>*\n{self.modality.value.capitalize()} Hackathon\n{self.starts_at.strftime('%b %d')} to {self.ends_at.strftime('%b %d')}\n" + (f"{self.location.city}, {self.location.country}" if self.location.city and self.location.country else "")
+                    "text": f"*{self.title}*\n{self.desc}\n*{self.start.strftime("%H:%M")} - {self.end.strftime("%H:%M, %d %B")}*"
                 },
                 "accessory": {
                     "type": "image",
-                    "image_url": self.logo_url,
-                    "alt_text": f"{self.name} thumbnail"
+                    "image_url": self.avatar,
+                    "alt_text": "Avatar"
                 }
+            },
+            {
+                "type": "context",
+                "elements": [
+                    {
+                        "type": "plain_text",
+                        "text": f"{"AMA p" if self.ama else "P"}resented by {self.leader}"
+                    }
+                ]
+            },
+            {
+                "type": "actions",
+                "elements": elements
             }
         ]

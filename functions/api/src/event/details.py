@@ -1,38 +1,31 @@
 from ..model.event.event import Event
 from ..model.event.response import Response
 
+
 def event_details(context):
     path: str = context.req.path
-    id = path.split("/")[-1]
+    slug = path.split("/")[-1]
 
-    context.log(f"Event Details — ID: {id}")
+    context.log(f"Event Details — Slug: {slug}")
 
-    response: Response = Response("https://dash.hackathons.hackclub.com/api/v1/hackathons")
+    response: Response = Response("https://events.hackclub.com/api/events/all/")
 
-    event: Event | None = next((event for event in response.events if event.id == id), None)
+    event: Event | None = next((event for event in response.events if event.slug == slug), None)
 
     if not event:
-        return context.res.text(f"No event with id {id}", 404)
+        return context.res.text(f"No hackathon with id {id}", 404)
 
-    blocks = event.to_blocks()
-    blocks.append(
-        {
-            "type": "image",
-            "image_url": event.banner_url,
-            "alt_text": f"{event.name} banner"
-        }
-    )
     return context.res.json(
         {
             "type": "modal",
             "title": {
                 "type": "plain_text",
-                "text": event.name
+                "text": event.title
             },
             "close": {
                 "type": "plain_text",
                 "text": "Done"
             },
-            "blocks": blocks
+            "blocks": event.to_blocks()
         }
     )

@@ -2,13 +2,38 @@ from datetime import datetime
 from enum import Enum
 from ..model.ysws.response import Response
 from ..model.ysws.program import Program, Status
-
+import urllib.parse
+import re
 
 def ysws_list(context):
+    body: str = context.req.body
     query = context.req.query
-    sort: Sort = Sort(query.get("sort")) if query.get("sort") else Sort.Date
-    filter: Filter = Filter(query.get("filter")) if query.get("filter") else Filter.Active
-    context.log(f"ysws List — Sort: {sort}, Filter: {filter}")
+
+    # Decode the body to extract the 'text' parameter
+    parsed = urllib.parse.parse_qs(body)
+    text = parsed.get("text", [""])[0]  # default to "" if 'text' not found
+
+    # Extract --filter: and --sort: values from text
+    filter_match = re.search(r'--filter:([^\s]+)', text)
+    sort_match = re.search(r'--sort:([^\s]+)', text)
+
+    # Determine Sort and Filter values
+    sort: Sort = (
+        Sort(sort_match.group(1))
+        if sort_match and sort_match.group(1) in Sort.__members__.values()
+        else Sort(query.get("sort"))
+        if query.get("sort") and query.get("sort") in Sort.__members__.values()
+        else Sort.Date
+    )
+
+    filter: Filter = (
+        Filter(filter_match.group(1))
+        if filter_match and filter_match.group(1) in Filter.__members__.values()
+        else Filter(query.get("filter"))
+        if query.get("filter") and query.get("filter") in Filter.__members__.values()
+        else Filter.Active
+    )
+    context.log(f"YSWS List — Sort: {sort}, Filter: {filter}")
 
     response: Response = Response("https://raw.githubusercontent.com/hackclub/YSWS-Catalog/refs/heads/main/api.json")
 
