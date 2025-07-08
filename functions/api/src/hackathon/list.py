@@ -37,12 +37,12 @@ def hackathon_list(context):
         else Filter.Active
     )
 
-    modality: Modality | None = (
+    modality: Modality = (
         Modality(modality_match.group(1))
         if modality_match and modality_match.group(1) in Modality.__members__.values()
         else Modality(query.get("modality"))
         if query.get("modality") and query.get("modality") in Modality.__members__.values()
-        else None
+        else Modality.ALL
     )
 
     response: Response = Response("https://dash.hackathons.hackclub.com/api/v1/hackathons")
@@ -54,7 +54,90 @@ def hackathon_list(context):
 
     return context.res.json(
         {
-            "blocks": [block for event in events[:10] for block in event.to_blocks()]
+            "blocks": [
+                {
+                    "type": "header",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Hackathons"
+                    }
+                },
+                {
+                    "type": "actions",
+                    "elements": [
+                        {
+                            "type": "static_select",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Filter"
+                            },
+                            "initial_option": {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": filter.name
+                                },
+                                "value": filter.value
+                            },
+                            "options": [
+                                {
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": f.name
+                                    },
+                                    "value": f.value
+                                } for f in Filter
+                            ]
+                        },
+                        {
+                            "type": "static_select",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Sort"
+                            },
+                            "initial_option": {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": sort.name
+                                },
+                                "value": sort.value
+                            },
+                            "options": [
+                                {
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": s.name
+                                    },
+                                    "value": s.value
+                                } for s in Sort
+                            ]
+                        },
+                        {
+                            "type": "static_select",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Modality"
+                            },
+                            "initial_option": {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": modality.name
+                                },
+                                "value": modality.value
+                            },
+                            "options": [
+                                {
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": m.name
+                                    },
+                                    "value": m.value
+                                } for m in Modality
+                            ]
+                        }
+                    ]
+                },
+                *[block for event in events[:10] for block in event.to_blocks()]
+            ]
         }
     )
 
@@ -95,7 +178,7 @@ def filter_hackathons(hackathons: list[Hackathon], filter: Filter) -> list[Hacka
                     event.starts_at <= datetime.now(timezone.utc) and (not event.ends_at >= datetime.now(timezone.utc))]
 
 
-def modality_filter(events: list[Hackathon], modality: Modality | None) -> list[Hackathon]:
+def modality_filter(events: list[Hackathon], modality: Modality) -> list[Hackathon]:
     match modality:
         case Modality.ONLINE:
             return [event for event in events if event.modality == Modality.ONLINE]

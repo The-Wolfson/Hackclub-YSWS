@@ -52,7 +52,90 @@ def event_list(context):
 
     return context.res.json(
         {
-            "blocks": [block for event in events[:10] for block in event.to_blocks()]
+            "blocks": [
+                {
+                    "type": "header",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "Hackclub Events"
+                    }
+                },
+                {
+                    "type": "actions",
+                    "elements": [
+                        {
+                            "type": "static_select",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Filter"
+                            },
+                            "initial_option": {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": filter.name
+                                },
+                                "value": filter.value
+                            },
+                            "options": [
+                                {
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": f.name
+                                    },
+                                    "value": f.value
+                                } for f in Filter
+                            ]
+                        },
+                        {
+                            "type": "static_select",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Sort"
+                            },
+                            "initial_option": {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": sort.name
+                                },
+                                "value": sort.value
+                            },
+                            "options": [
+                                {
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": s.name
+                                    },
+                                    "value": s.value
+                                } for s in Sort
+                            ]
+                        },
+                        {
+                            "type": "static_select",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Modality"
+                            },
+                            "initial_option": {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": type.name
+                                },
+                                "value": type.value
+                            },
+                            "options": [
+                                {
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": t.name
+                                    },
+                                    "value": t.value
+                                } for t in Type
+                            ]
+                        }
+                    ]
+                },
+                *[block for event in events[:10] for block in event.to_blocks()]
+            ]
         }
     )
 

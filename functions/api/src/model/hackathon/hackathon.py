@@ -7,6 +7,7 @@ class Modality(Enum):
     HYBRID = "hybrid"
     IN_PERSON = "in_person"
     ONLINE = "online"
+    ALL = "all"
 
 
 class TypeEnum(Enum):

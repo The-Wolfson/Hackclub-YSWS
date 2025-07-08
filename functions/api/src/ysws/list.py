@@ -41,7 +41,67 @@ def ysws_list(context):
 
     return context.res.json(
         {
-            "blocks": [block for program in programs[:10] for block in program.to_blocks()]
+            "blocks": [
+                {
+                    "type": "header",
+                    "text": {
+                        "type": "plain_text",
+                        "text": "YSWS Programs"
+                    }
+                },
+                {
+                    "type": "actions",
+                    "elements": [
+                        {
+                            "type": "static_select",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Filter"
+                            },
+                            "initial_option": {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": filter.name
+                                },
+                                "value": filter.value
+                            },
+                            "options": [
+                                {
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": f.name
+                                    },
+                                    "value": f.value
+                                } for f in Filter
+                            ]
+                        },
+                        {
+                            "type": "static_select",
+                            "placeholder": {
+                                "type": "plain_text",
+                                "text": "Sort"
+                            },
+                            "initial_option": {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": sort.name
+                                },
+                                "value": sort.value
+                            },
+                            "options": [
+                                {
+                                    "text": {
+                                        "type": "plain_text",
+                                        "text": s.name
+                                    },
+                                    "value": s.value
+                                } for s in Sort
+                            ]
+                        }
+                    ]
+                },
+                *[block for program in programs[:10] for block in program.to_blocks()]
+            ]
         }
     )
 
