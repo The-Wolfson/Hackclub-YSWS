@@ -4,7 +4,7 @@ from .hackathon.list import hackathon_list
 from .hackathon.details import hackathon_details
 from .event.list import event_list
 from .event.details import event_details
-
+from .help import help
 
 
 # This Appwrite function will be executed every time your function is triggered
@@ -23,6 +23,11 @@ def main(context):
         message = f"{path} is not a valid path. Requires a version."
         context.error(message)
         return context.res.text(message, 400)
+
+    body: str = context.req.body_text
+    if "help" in body or split_path[1] == "help":
+        context.log("Giving help")
+        return help(context)
 
     if split_path[1] == "ysws":
         if len(split_path) == 2:
