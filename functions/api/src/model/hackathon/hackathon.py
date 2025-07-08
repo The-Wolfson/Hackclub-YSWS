@@ -4,10 +4,10 @@ from dataclasses import dataclass
 from .location import Location
 
 class Modality(Enum):
-    HYBRID = "hybrid"
-    IN_PERSON = "in_person"
-    ONLINE = "online"
-    ALL = "all"
+    Hybrid = "hybrid"
+    In_Person = "in_person"
+    Online = "online"
+    All = "all"
 
 
 class TypeEnum(Enum):

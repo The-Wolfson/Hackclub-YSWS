@@ -13,24 +13,28 @@ def ysws_list(context):
     parsed = urllib.parse.parse_qs(body)
     text = parsed.get("text", [""])[0]  # default to "" if 'text' not found
 
-    # Extract --filter: and --sort: values from text
-    filter_match = re.search(r'--filter:([^\s]+)', text)
-    sort_match = re.search(r'--sort:([^\s]+)', text)
+    context.log(parsed)
 
-    # Determine Sort and Filter values
+    # Extract filter: and sort: values from text
+    filter_match = re.search(r'filter:(\S+)', text)
+    sort_match = re.search(r'sort:(\S+)', text)
+
+    context.log(filter_match)
+    context.log(query.get("sort"))
+
     sort: Sort = (
         Sort(sort_match.group(1))
-        if sort_match and sort_match.group(1) in Sort.__members__.values()
+        if sort_match and sort_match.group(1) in [s.value for s in Sort]
         else Sort(query.get("sort"))
-        if query.get("sort") and query.get("sort") in Sort.__members__.values()
+        if query.get("sort") and query.get("sort") in [s.value for s in Sort]
         else Sort.Date
     )
 
     filter: Filter = (
         Filter(filter_match.group(1))
-        if filter_match and filter_match.group(1) in Filter.__members__.values()
+        if filter_match and filter_match.group(1) in [f.value for f in Filter]
         else Filter(query.get("filter"))
-        if query.get("filter") and query.get("filter") in Filter.__members__.values()
+        if query.get("filter") and query.get("filter") in [f.value for f in Filter]
         else Filter.Active
     )
     context.log(f"YSWS List — Sort: {sort}, Filter: {filter}")
@@ -129,7 +133,7 @@ def sort_programs(programs: list[Program], sort: Sort) -> list[Program]:
         case Sort.Status:
             return sorted(programs, key=lambda program: program.status.value)
         case _:  # Date
-            return sorted(programs, key=lambda program: program.deadline if program.deadline else datetime.now(), reverse=True)
+            return sorted(programs, key=lambda program: program.deadline if program.deadline else datetime.max, reverse=False)
 
 
 def filter_programs(programs: list[Program], filter: Filter) -> list[Program]:

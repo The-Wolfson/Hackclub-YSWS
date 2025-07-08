@@ -15,34 +15,34 @@ def hackathon_list(context):
     parsed = urllib.parse.parse_qs(body)
     text = parsed.get("text", [""])[0]  # default to "" if 'text' not found
 
-    # Extract --filter: and --sort: values from text
-    filter_match = re.search(r'--filter:([^\s]+)', text)
-    sort_match = re.search(r'--sort:([^\s]+)', text)
-    modality_match = re.search(r'--modality:([^\s]+)', text)
+    # Extract values from text
+    filter_match = re.search(r'filter:([^\s]+)', text)
+    sort_match = re.search(r'sort:([^\s]+)', text)
+    modality_match = re.search(r'modality:([^\s]+)', text)
 
     # Determine Sort and Filter values
     sort: Sort = (
         Sort(sort_match.group(1))
-        if sort_match and sort_match.group(1) in Sort.__members__.values()
+        if sort_match and sort_match.group(1) in [s.value for s in Sort]
         else Sort(query.get("sort"))
-        if query.get("sort") and query.get("sort") in Sort.__members__.values()
+        if query.get("sort") and query.get("sort") in [s.value for s in Sort]
         else Sort.Date
     )
 
     filter: Filter = (
         Filter(filter_match.group(1))
-        if filter_match and filter_match.group(1) in Filter.__members__.values()
+        if filter_match and filter_match.group(1) in [f.value for f in Filter]
         else Filter(query.get("filter"))
-        if query.get("filter") and query.get("filter") in Filter.__members__.values()
+        if query.get("filter") and query.get("filter") in [f.value for f in Filter]
         else Filter.Active
     )
 
     modality: Modality = (
         Modality(modality_match.group(1))
-        if modality_match and modality_match.group(1) in Modality.__members__.values()
+        if modality_match and modality_match.group(1) in [m.value for m in Modality]
         else Modality(query.get("modality"))
-        if query.get("modality") and query.get("modality") in Modality.__members__.values()
-        else Modality.ALL
+        if query.get("modality") and query.get("modality") in [m.value for m in Modality]
+        else Modality.All
     )
 
     response: Response = Response("https://dash.hackathons.hackclub.com/api/v1/hackathons")
@@ -180,11 +180,11 @@ def filter_hackathons(hackathons: list[Hackathon], filter: Filter) -> list[Hacka
 
 def modality_filter(events: list[Hackathon], modality: Modality) -> list[Hackathon]:
     match modality:
-        case Modality.ONLINE:
-            return [event for event in events if event.modality == Modality.ONLINE]
-        case Modality.IN_PERSON:
-            return [event for event in events if event.modality == Modality.IN_PERSON]
-        case Modality.HYBRID:
-            return [event for event in events if event.modality == Modality.HYBRID]
+        case Modality.Online:
+            return [event for event in events if event.modality == Modality.Online]
+        case Modality.In_Person:
+            return [event for event in events if event.modality == Modality.In_Person]
+        case Modality.Hybrid:
+            return [event for event in events if event.modality == Modality.Hybrid]
         case _:
             return events

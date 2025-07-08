@@ -14,33 +14,32 @@ def event_list(context):
     parsed = urllib.parse.parse_qs(body)
     text = parsed.get("text", [""])[0]  # default to "" if 'text' not found
 
-    # Extract --filter: and --sort: values from text
-    filter_match = re.search(r'--filter:([^\s]+)', text)
-    sort_match = re.search(r'--sort:([^\s]+)', text)
-    type_match = re.search(r'--modality:([^\s]+)', text)
+    filter_match = re.search(r'filter:([^\s]+)', text)
+    sort_match = re.search(r'sort:([^\s]+)', text)
+    type_match = re.search(r'modality:([^\s]+)', text)
 
     # Determine Sort and Filter values
     sort: Sort = (
         Sort(sort_match.group(1))
-        if sort_match and sort_match.group(1) in Sort.__members__.values()
+        if sort_match and sort_match.group(1) in [s.value for s in Sort]
         else Sort(query.get("sort"))
-        if query.get("sort") and query.get("sort") in Sort.__members__.values()
+        if query.get("sort") and query.get("sort") in [s.value for s in Sort]
         else Sort.Date
     )
 
     filter: Filter = (
         Filter(filter_match.group(1))
-        if filter_match and filter_match.group(1) in Filter.__members__.values()
+        if filter_match and filter_match.group(1) in [f.value for f in Filter]
         else Filter(query.get("filter"))
-        if query.get("filter") and query.get("filter") in Filter.__members__.values()
+        if query.get("filter") and query.get("filter") in [f.value for f in Filter]
         else Filter.Upcoming
     )
 
     type: Type = (
         Type(type_match.group(1))
-        if type_match and type_match.group(1) in Type.__members__.values()
+        if type_match and type_match.group(1) in [t.value for t in Type]
         else Type(query.get("type"))
-        if query.get("type") and query.get("type") in Type.__members__.values()
+        if query.get("type") and query.get("type") in [t.value for t in Type]
         else Type.All
     )
 
