@@ -22,11 +22,11 @@ lists all ysws programs
 
 ---
 
-### `/events`
-lists all events
+### `/hackathons`
+lists all hackathons
 - **Filter:**
-  - `all` *(default)*
-  - `active`
+  - `all`
+  - `active` *(default)*
   - `ended`
   - `upcoming`
 
@@ -42,4 +42,25 @@ lists all events
   - `date` *(default)*
 
 #### `/:id`  
-  Get details for a specific event by ID.
+  Get details for a specific hackathon by ID.
+  
+---
+
+### `/events`
+lists all events
+- **Filter:**
+  - `all` *(default)*
+  - `ended`
+  - `upcoming`
+
+- **Type:**
+  - `all` *(default)*
+  - `ama`
+  - `event`
+
+- **Sort:**
+  - `alphabetical`
+  - `date` *(default)*
+
+#### `/:slug`  
+  Get details for a specific hackathon by its slug.

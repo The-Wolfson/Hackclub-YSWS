@@ -13,7 +13,7 @@ def event_details(context):
     event: Event | None = next((event for event in response.events if event.slug == slug), None)
 
     if not event:
-        return context.res.text(f"No hackathon with id {id}", 404)
+        return context.res.text(f"No hackathon with slug {slug}", 404)
 
     return context.res.json(
         {
